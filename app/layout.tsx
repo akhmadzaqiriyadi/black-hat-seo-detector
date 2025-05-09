@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,58 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="bg-blue-900 text-white py-4">
-          <div className="container mx-auto px-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Black Hat SEO Detector</h1>
-            <nav>
-              <ul className="flex space-x-6">
-                <li>
-                  <a href="/" className="hover:underline">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/workflow" className="hover:underline">
-                    How It Works
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:underline">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="mailto:contact@seodetector.com"
-                    className="hover:underline"
-                  >
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
+        <Navbar />
         {children}
-        <footer className="bg-gray-800 text-white py-8">
-          <div className="container mx-auto px-4 text-center">
-            <p className="mb-4">
-              © 2025 Black Hat SEO Detector. All rights reserved.
-            </p>
-            <ul className="flex justify-center space-x-6">
-              <li>
-                <a href="/privacy" className="hover:underline">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="/terms" className="hover:underline">
-                  Terms of Service
-                </a>
-              </li>
-            </ul>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
