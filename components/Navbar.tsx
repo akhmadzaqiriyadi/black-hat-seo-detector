@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // Import usePathname
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname(); // Get current pathname
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -148,7 +150,9 @@ const Navbar = () => {
                 >
                   <Link
                     href={item.href}
-                    className="text-gray-700 hover:text-red-600"
+                    className={`${
+                      pathname === item.href ? "text-red-600" : "text-gray-700"
+                    } hover:text-red-600 transition-colors`}
                   >
                     <motion.span
                       whileHover={{ scale: 1.1 }}
@@ -239,7 +243,7 @@ const Navbar = () => {
                 {[
                   { href: "/", label: "Home" },
                   { href: "/about", label: "About Us" },
-                  { href: "/workflow", label: "How It Works" }
+                  { href: "/workflow", label: "How It Works" },
                 ].map((item, i) => (
                   <motion.div
                     key={item.href}
@@ -248,7 +252,11 @@ const Navbar = () => {
                   >
                     <Link
                       href={item.href}
-                      className="block px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg"
+                      className={`block px-4 py-2 ${
+                        pathname === item.href
+                          ? "text-red-600"
+                          : "text-gray-700"
+                      } hover:bg-blue-100 rounded-lg transition-colors`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.label}
