@@ -73,7 +73,7 @@ const Footer = () => {
       {/* Background Pattern */}
       <div className="absolute top-0 right-0 w-full h-full opacity-50 pointer-events-none">
         <Image
-          src="/images/seo-pattern.svg"
+          src="/Images/seo-pattern.svg"
           alt="SEO pattern background"
           fill
           className="object-cover"
@@ -92,7 +92,7 @@ const Footer = () => {
           <motion.div variants={itemVariants} className="md:col-span-1">
             <div className="flex items-center mb-4">
               <Image
-                src="/images/logo.png"
+                src="/Images/logo.png"
                 alt="Black Hat SEO Detector Logo"
                 width={50}
                 height={50}

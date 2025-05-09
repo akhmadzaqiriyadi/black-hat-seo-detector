@@ -114,7 +114,7 @@ const Navbar = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Image
-                    src="/images/logo.png"
+                    src="/Images/logo.png"
                     alt="UTY Creative Hub Logo"
                     width={50}
                     height={50}
