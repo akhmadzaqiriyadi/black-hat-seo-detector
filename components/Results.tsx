@@ -1,6 +1,6 @@
-// components/Results.tsx - Enhanced with confidence visualization diagram
+// components/Results.tsx
+import { AlertTriangle, Check, ExternalLink, Info } from 'lucide-react';
 import { Explanation } from '@/types';
-import ExplanationCard from './ExplanationCard';
 import ConfidenceMeter from './ConfidenceMeter';
 
 interface ResultsProps {
@@ -20,83 +20,146 @@ export default function Results({ result }: ResultsProps) {
   // Determine status based on prediction
   const isBlackHat = (prediction || '').toLowerCase().includes('black hat') && 
                      !(prediction || '').toLowerCase().includes('no black hat');
-  const statusColor = isBlackHat ? 'red' : 'green';
-  const statusIcon = isBlackHat ? 
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-    </svg> : 
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-    </svg>;
   
   // Extract numeric confidence value (remove % sign if present)
   const confidenceValue = parseFloat((confidence || '0').replace('%', ''));
   
   return (
-    <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4 flex items-center">
-        <span className="mr-2">Analysis Results</span>
-        {statusIcon}
-      </h2>
-      
-      <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-        <div className="p-6">
-          <h3 className="text-xl font-bold mb-2">{prediction}</h3>
-          <p className="text-lg mb-4">Confidence Level</p>
+    <div className="mt-8 space-y-6">
+      {/* Main Result Card */}
+      <div className={`p-4 rounded-lg border-l-4 ${isBlackHat ? 'bg-red-50 border-red-600' : 'bg-green-50 border-green-600'}`}>
+        <div className="flex items-start">
+          <div className={`p-2 rounded-full ${isBlackHat ? 'bg-red-200' : 'bg-green-200'} mr-4`}>
+            {isBlackHat ? (
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            ) : (
+              <Check className="h-6 w-6 text-green-600" />
+            )}
+          </div>
           
-          <ConfidenceMeter 
-            confidence={confidenceValue} 
-            isBlackHat={isBlackHat} 
-          />
-          
-          <div className="mt-4">
-            <p className="text-gray-700">
-              <span className="font-medium">Analyzed URL:</span>{' '}
-              <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                {url}
-              </a>
+          <div>
+            <h2 className="text-xl font-bold">
+              {isBlackHat ? 'Terdeteksi Black Hat SEO' : 'Tidak Terdeteksi Black Hat SEO'}
+            </h2>
+            <p className="mt-1 text-gray-700">
+              {prediction}
             </p>
           </div>
         </div>
       </div>
       
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Detailed Information</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-medium text-gray-700">Top Keywords</h4>
-              {Array.isArray(top_keywords) && top_keywords.length > 0 ? (
-                <ul className="mt-2 space-y-1">
-                  {top_keywords.map(([keyword, count], index) => (
-                    <li key={index} className="flex justify-between">
-                      <span>{keyword}</span>
-                      <span className="text-gray-500">{count} occurrences</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500 mt-2">No keywords data available</p>
-              )}
-            </div>
-            
-            <div>
-              <h4 className="font-medium text-gray-700">Detection Reasons</h4>
-              {Array.isArray(reasons) && reasons.length > 0 ? (
-                <ul className="mt-2 list-disc pl-5 space-y-1">
-                  {reasons.map((reason, index) => (
-                    <li key={index}>{reason}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500 mt-2">
-                  {isBlackHat ? "No specific reasons provided" : "Website appears clean"}
-                </p>
-              )}
-            </div>
-          </div>
+      {/* Confidence Meter */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-bold mb-4">Tingkat Kepercayaan Prediksi</h3>
+        <ConfidenceMeter confidence={confidenceValue} isBlackHat={isBlackHat} />
+      </div>
+      
+      {/* URL Information */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-bold mb-4">Informasi Website</h3>
+        <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
+          <Info size={16} className="text-gray-500" />
+          <span className="text-gray-700 font-medium">URL yang Dianalisis:</span>
         </div>
+        <a 
+          href={url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="mt-2 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          {url}
+          <ExternalLink size={16} className="ml-1" />
+        </a>
+      </div>
+      
+      {/* Detection Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Reasons Card */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-bold mb-4">Alasan Deteksi</h3>
+          
+          {Array.isArray(reasons) && reasons.length > 0 ? (
+            <ul className="space-y-3">
+              {reasons.map((reason, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <div className={`p-1 rounded-full ${isBlackHat ? 'bg-red-100' : 'bg-green-100'} mt-0.5`}>
+                    {isBlackHat ? (
+                      <AlertTriangle size={12} className="text-red-600" />
+                    ) : (
+                      <Check size={12} className="text-green-600" />
+                    )}
+                  </div>
+                  <span className="text-gray-700">{reason}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-gray-500 italic">
+              {isBlackHat 
+                ? "Tidak ada alasan spesifik yang diberikan untuk deteksi Black Hat SEO."
+                : "Tidak ada masalah Black Hat SEO yang terdeteksi pada website ini."}
+            </div>
+          )}
+        </div>
+        
+        {/* Keywords Card */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-bold mb-4">Kata Kunci Teratas</h3>
+          
+          {Array.isArray(top_keywords) && top_keywords.length > 0 ? (
+            <div className="space-y-3">
+              {top_keywords.map(([keyword, count], index) => (
+                <div key={index} className="flex justify-between items-center pb-2 border-b border-gray-100">
+                  <span className="font-medium text-gray-800">{keyword}</span>
+                  <div className="flex items-center">
+                    <span className="text-gray-500 text-sm">{count} kemunculan</span>
+                    <div className="ml-2 w-12 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full ${
+                          isBlackHat && count > 20 ? 'bg-red-500' : 'bg-blue-500'
+                        }`}
+                        style={{ width: `${Math.min(count * 5, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-500 italic">
+              Tidak ada informasi kata kunci yang tersedia.
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Recommendations */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-bold mb-4">Rekomendasi</h3>
+        
+        {isBlackHat ? (
+          <div className="space-y-3">
+            <p className="text-gray-700">Berdasarkan analisis, website ini menggunakan teknik Black Hat SEO. Beberapa rekomendasi:</p>
+            <ul className="list-disc pl-5 space-y-2 text-gray-700">
+              <li>Hindari penggunaan kata kunci yang berlebihan (keyword stuffing)</li>
+              <li>Pastikan konten yang dilihat pengguna sama dengan yang dilihat oleh search engine</li>
+              <li>Hapus konten tersembunyi yang tidak relevan</li>
+              <li>Bersihkan tautan yang mencurigakan atau spam</li>
+              <li>Fokus pada pembuatan konten berkualitas dan relevan</li>
+            </ul>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-gray-700">Website ini tampaknya menggunakan praktik SEO yang baik. Untuk mempertahankan dan meningkatkan:</p>
+            <ul className="list-disc pl-5 space-y-2 text-gray-700">
+              <li>Lanjutkan membuat konten berkualitas dan relevan</li>
+              <li>Pastikan website tetap memiliki performa yang baik</li>
+              <li>Tingkatkan pengalaman pengguna</li>
+              <li>Perbarui konten secara berkala</li>
+              <li>Pantau performa website di search engine</li>
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
