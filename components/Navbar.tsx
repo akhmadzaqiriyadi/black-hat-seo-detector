@@ -243,6 +243,7 @@ const Navbar = () => {
               <div className="px-4 py-6 space-y-4">
                 {[
                   { href: "/", label: "Home" },
+                  { href: "/analyze", label: "Detect" },
                   { href: "/about", label: "About Us" },
                   { href: "/workflow", label: "How It Works" },
                 ].map((item, i) => (
