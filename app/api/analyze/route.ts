@@ -11,10 +11,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Call the Flask API
-    const flaskApiUrl = process.env.FLASK_API_URL || 'http://localhost:5001';
+    // Prioritize NEXT_PUBLIC_API_URL as that's what is being set in deployment
+    let flaskApiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.FLASK_API_URL || 'http://localhost:5001';
     
+    // Remove trailing slash if present to ensure clean concatenation
+    flaskApiUrl = flaskApiUrl.replace(/\/$/, '');
+
+    console.log(`Using Backend API URL: ${flaskApiUrl}`);
+
     try {
-      const response = await fetch(`${flaskApiUrl}/api/explain`, {
+      // Create independent target URL to handle potentially duplicate /api segments if the env var includes it
+      // Users sometimes put '.../api' in the env var. 
+      // If flaskApiUrl ends with '/api', and we append '/api/explain', we might get '/api/api/explain'
+      // Ideally we'd strip one, but let's stick to simple concatenation for now but ensure we don't double slash the join.
+      
+      const targetUrl = `${flaskApiUrl}/api/explain`;
+      console.log(`Target URL: ${targetUrl}`);
+
+      const response = await fetch(targetUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
