@@ -20,12 +20,16 @@ export async function POST(request: NextRequest) {
     console.log(`Using Backend API URL: ${flaskApiUrl}`);
 
     try {
-      // Create independent target URL to handle potentially duplicate /api segments if the env var includes it
-      // Users sometimes put '.../api' in the env var. 
-      // If flaskApiUrl ends with '/api', and we append '/api/explain', we might get '/api/api/explain'
-      // Ideally we'd strip one, but let's stick to simple concatenation for now but ensure we don't double slash the join.
+      // Handle potential duplicate /api segments
+      // If the provided URL already ends with /api, we shouldn't append /api again
+      // even though the Flask route is defined as /api/explain.
+      let targetUrl;
+      if (flaskApiUrl.endsWith('/api')) {
+          targetUrl = `${flaskApiUrl}/explain`;
+      } else {
+          targetUrl = `${flaskApiUrl}/api/explain`;
+      }
       
-      const targetUrl = `${flaskApiUrl}/api/explain`;
       console.log(`Target URL: ${targetUrl}`);
 
       const response = await fetch(targetUrl, {
